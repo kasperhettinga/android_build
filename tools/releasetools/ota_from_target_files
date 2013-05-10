@@ -317,6 +317,9 @@ def AppendAssertions(script, info_dict):
     device = GetBuildProp("ro.product.device", info_dict)
   else:
     device = OPTIONS.override_device
+  script.Print("Welcome to Mackay ROM installation")
+  script.Print(" ")
+  script.Print("Checking device ID...")
   script.AssertDevice(device)
 
 
@@ -405,10 +408,10 @@ def WriteFullOTAPackage(input_zip, output_zip):
   device_specific.FullOTA_Assertions()
   device_specific.FullOTA_InstallBegin()
 
-  if OPTIONS.backuptool:
-    script.Mount("/system")
-    script.RunBackup("backup")
-    script.Unmount("/system")
+  #if OPTIONS.backuptool:
+  #  script.Mount("/system")
+  #  script.RunBackup("backup")
+  #  script.Unmount("/system")
 
   script.ShowProgress(0.5, 0)
 
@@ -418,9 +421,11 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if "selinux_fc" in OPTIONS.info_dict:
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
+  script.Print("Formatting system partition")
   script.FormatPartition("/system")
   script.Mount("/system")
   #script.UnpackPackageDir("recovery", "/system")
+  script.Print("Installing Mackay ROM")
   script.UnpackPackageDir("system", "/system")
 
   symlinks = CopySystemFiles(input_zip, output_zip)
@@ -433,15 +438,16 @@ def WriteFullOTAPackage(input_zip, output_zip):
   #MakeRecoveryPatch(OPTIONS.input_tmp, output_zip, recovery_img, boot_img)
 
   Item.GetMetadata(input_zip)
+  script.Print("Fixing permissions...")
   Item.Get("system").SetPermissions(script)
 
   common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
   common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
   script.ShowProgress(0.2, 0)
 
-  if OPTIONS.backuptool:
-    script.ShowProgress(0.2, 10)
-    script.RunBackup("restore")
+  #if OPTIONS.backuptool:
+  #  script.ShowProgress(0.2, 10)
+  #  script.RunBackup("restore")
 
   script.ShowProgress(0.2, 10)
   script.WriteRawImage("/boot", "boot.img")
@@ -857,6 +863,9 @@ def main(argv):
   common.Cleanup()
 
   print "done."
+  script.Print("I hope you will enjoy Mackay ROM!")
+  script.Print(" ")
+  script.Print("**Installation complete - you can reboot now**")
 
 
 if __name__ == '__main__':
