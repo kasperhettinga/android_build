@@ -458,7 +458,12 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if OPTIONS.extra_script is not None:
     script.AppendExtra(OPTIONS.extra_script)
 
+  script.Print("Unmounting partitions...")
   script.UnmountAll()
+  script.Print(" ")
+  script.Print("I hope you will enjoy Mackay ROM!")
+  script.Print(" ")
+  script.Print("**Installation complete - you can reboot now**")
   script.AddToZip(input_zip, output_zip)
   WriteMetadata(metadata, output_zip)
 
@@ -863,10 +868,6 @@ def main(argv):
   common.Cleanup()
 
   print "done."
-  script.Print("I hope you will enjoy Mackay ROM!")
-  script.Print(" ")
-  script.Print("**Installation complete - you can reboot now**")
-
 
 if __name__ == '__main__':
   try:
