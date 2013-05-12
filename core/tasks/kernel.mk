@@ -138,10 +138,14 @@ ifeq ($(TARGET_ARCH),arm)
         ifeq ($(HOST_OS),darwin)
             ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilt/darwin-x86/toolchain/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-"
         else
-          ifeq ($(TARGET_KERNEL_CUSTOM_TOOLCHAIN),linaro-4.7)
+          ifneq (,$(filter linaro%,$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)))
               ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-linux-gnueabihf-"
           else
+            ifneq (,$(filter a8linaro%,$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)))
+              ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-cortex_a8-linux-gnueabi-"
+            else
               ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-"
+            endif
           endif
         endif
     else
