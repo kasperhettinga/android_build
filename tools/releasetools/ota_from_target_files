@@ -310,6 +310,9 @@ def SignOutput(temp_zip_name, output_zip_name):
 
 def AppendAssertions(script, info_dict):
   device = GetBuildProp("ro.product.device", info_dict)
+  script.Print("Welcome to Mackay ROM installation")
+  script.Print(" ")
+  script.Print("Checking device ID...")
   script.AssertDevice(device)
 
 
@@ -407,8 +410,10 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if "selinux_fc" in OPTIONS.info_dict:
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
+  script.Print("Formatting system partition")
   script.FormatPartition("/system")
   script.Mount("/system")
+  script.Print("Installing Mackay ROM")
   script.UnpackPackageDir("system", "/system")
 
   symlinks = CopySystemFiles(input_zip, output_zip)
@@ -418,6 +423,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
                                      OPTIONS.input_tmp, "BOOT")
 
   Item.GetMetadata(input_zip)
+  script.Print("Fixing permissions...")
   Item.Get("system").SetPermissions(script)
 
   common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
@@ -437,7 +443,12 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if OPTIONS.extra_script is not None:
     script.AppendExtra(OPTIONS.extra_script)
 
+  script.Print("Unmounting partitions...")
   script.UnmountAll()
+  script.Print(" ")
+  script.Print("I hope you will enjoy Mackay ROM!")
+  script.Print(" ")
+  script.Print("**Installation complete - you can reboot now**")
   script.AddToZip(input_zip, output_zip)
   WriteMetadata(metadata, output_zip)
 
