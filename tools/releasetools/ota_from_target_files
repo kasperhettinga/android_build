@@ -447,6 +447,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
   device_specific.FullOTA_InstallBegin()
 
   if OPTIONS.backuptool:
+    script.Print("Backup of gapps & settings")
     script.Mount("/system")
     script.RunBackup("backup")
     script.Unmount("/system")
@@ -484,10 +485,12 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.ShowProgress(0.2, 0)
 
   if OPTIONS.backuptool:
+    script.Print("Restoring gapps & settings")
     script.ShowProgress(0.2, 10)
     script.RunBackup("restore")
 
   script.ShowProgress(0.2, 10)
+  script.Print("Installing Mackay kernel")
   script.WriteRawImage("/boot", "boot.img")
 
   script.ShowProgress(0.1, 0)
